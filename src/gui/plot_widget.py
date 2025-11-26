@@ -40,6 +40,8 @@ class PlotWidget(QWidget):
             return
 
         self.ax.clear()
+        # Hide annotation when refreshing/switching views
+        self.annot.set_visible(False)
         
         plot_type = self.config.active_plot_type
         
@@ -50,10 +52,12 @@ class PlotWidget(QWidget):
         elif plot_type == PlotType.SMITH:
             self.plot_smith()
             
+        self.figure.tight_layout()
         self.canvas.draw()
 
     def plot_magnitude_db(self):
         """Plot Magnitude in dB."""
+        self.ax.axis('auto') # Reset aspect ratio
         self.ax.set_xlabel("Frequency (Hz)")
         self.ax.set_ylabel("Magnitude (dB)")
         self.ax.grid(True)
@@ -73,6 +77,7 @@ class PlotWidget(QWidget):
 
     def plot_phase_deg(self):
         """Plot Phase in degrees."""
+        self.ax.axis('auto') # Reset aspect ratio
         self.ax.set_xlabel("Frequency (Hz)")
         self.ax.set_ylabel("Phase (deg)")
         self.ax.grid(True)
@@ -92,21 +97,34 @@ class PlotWidget(QWidget):
     def plot_smith(self):
         """Plot Smith Chart."""
         try:
-            rf.plotting.smith(ax=self.ax)
+            rf.plotting.smith(ax=self.ax, draw_labels=True)
         except Exception:
             self.ax.grid(True)
             self.ax.text(0, 0, "Smith Chart Grid Error")
+            
+        # Determine mask for frequency range
+        mask = np.ones(len(self.dataset.frequencies), dtype=bool)
+        if self.config.freq_min > 0 and self.config.freq_max > self.config.freq_min:
+            mask = (self.dataset.frequencies >= self.config.freq_min) & \
+                   (self.dataset.frequencies <= self.config.freq_max)
 
         for param in self.dataset.parameter_names:
             if self.config.visible_traces and param not in self.config.visible_traces:
                 continue
             
             _, s_complex = self.dataset.get_complex_data(param)
-            # Picker might need careful handling on smith chart, but basic plot supports it
-            self.ax.plot(np.real(s_complex), np.imag(s_complex), label=param, picker=5)
+            
+            # Apply mask
+            s_filtered = s_complex[mask]
+            
+            if len(s_filtered) > 0:
+                self.ax.plot(np.real(s_filtered), np.imag(s_filtered), label=param, picker=5)
             
         self.ax.legend()
         self.ax.axis('equal')
+        # Force limits to keep the chart centered and sized appropriately
+        self.ax.set_xlim(-1.1, 1.1)
+        self.ax.set_ylim(-1.1, 1.1)
 
     def on_pick(self, event):
         """Handle click on plot."""
