@@ -7,7 +7,7 @@
 
 ## Summary
 
-The "S-Parameter Viewer" is a desktop application designed for RF engineers to visualize Touchstone files (.snp). It enables users to load multiple files (v1.0 and v2.0) in tabs, view Magnitude/Phase/Smith Charts, toggle trace visibility, and inspect data points. The technical approach leverages `scikit-rf` for parsing and network analysis, `matplotlib` for plotting, and `PyQt6` for the application framework.
+The "S-Parameter Viewer" is a desktop application designed for RF engineers to visualize Touchstone files (.snp). It enables users to load multiple files (v1.0 and v2.0) in tabs, view Magnitude/Phase/Smith Charts, toggle trace visibility, and inspect data points with **multiple persistent markers**. The Smith Chart view features dynamic filtering based on the selected frequency range. The technical approach leverages `scikit-rf` for parsing and network analysis, `matplotlib` for plotting, and `PyQt6` for the application framework.
 
 ## Technical Context
 
@@ -49,8 +49,7 @@ specs/001-s-parameter-viewer/
 src/
 ├── app.py               # Entry point
 ├── core/
-│   ├── loader.py        # File I/O and parsing (scikit-rf wrapper)
-│   └── analyzer.py      # Data processing
+│   └── loader.py        # File I/O and parsing (scikit-rf wrapper)
 ├── gui/
 │   ├── main_window.py   # Main application shell (TabWidget)
 │   ├── plot_widget.py   # Matplotlib embedding

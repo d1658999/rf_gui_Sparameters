@@ -7,12 +7,9 @@
 
 ## Clarifications
 
-### Session 2025-11-26
-- Q: Which visualization formats are required? → A: All Standard Views (Magnitude, Phase, and Smith Chart).
-- Q: How should multiple view types be organized? → A: Tabs (One view active at a time).
-- Q: How should file loading behave? → A: Multi-File (Tabs) - Each file opens in a new independent tab.
-- Q: Which tech stack should be used? → A: scikit-rf + matplotlib (Standard RF analysis + scientific plotting).
-- Q: Which file versions must be supported? → A: Touchstone v2.0 (Full support).
+### Session 2025-11-26 (Implementation Updates)
+- Q: How should markers behave? → A: Support multiple persistent markers; Right-click to clear all.
+- Q: How should Smith Chart handle frequency range? → A: Filter displayed data points to match the selected frequency band.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -60,9 +57,10 @@ As an RF Engineer, I want to mark specific points on the trace so that I can rea
 
 **Acceptance Scenarios**:
 
-1. **Given** a visible trace, **When** I click on a specific point on the line, **Then** a marker is placed at that location.
-2. **Given** a marker is placed, **Then** a display (tooltip or side panel) shows the exact Frequency (Hz/MHz/GHz) and Magnitude (dB) of that point.
-3. **Given** multiple traces, **When** I click a point, **Then** the marker associates clearly with the nearest trace.
+1. **Given** a visible trace, **When** I click on a specific point on the line, **Then** a **persistent marker** is placed at that location.
+2. **Given** a marker is placed, **Then** a label next to the marker shows the exact Frequency and Value (dB, Deg, or Z) of that point.
+3. **Given** existing markers, **When** I click another point, **Then** a **new additional marker** is added (previous markers remain).
+4. **Given** markers exist on the plot, **When** I **right-click** anywhere on the plot area, **Then** all markers are cleared.
 
 ---
 
@@ -78,7 +76,7 @@ As an RF Engineer, I want to manually set the start and stop frequencies of the 
 
 1. **Given** a plot covering 1GHz to 10GHz, **When** I enter "2GHz" as Start and "3GHz" as Stop, **Then** the plot redraws showing only the 2-3GHz range.
 2. **Given** the frequency range inputs, **When** I enter a Start frequency higher than the Stop frequency, **Then** the system prevents the change or warns the user.
-3. **Given** a zoomed-in view, **When** I click a "Reset" or "Full View" button (implied need), **Then** the plot returns to the full frequency range of the loaded file.
+3. **Given** a Smith Chart view, **When** I adjust the frequency range, **Then** the chart updates to display **only the data points** within that frequency band.
 
 ### Edge Cases
 
