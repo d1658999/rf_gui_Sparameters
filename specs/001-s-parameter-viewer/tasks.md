@@ -21,9 +21,9 @@ description: "Tasks for 001-s-parameter-viewer"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create project structure (src/core, src/gui, src/models, tests/unit)
-- [ ] T002 Create requirements.txt with scikit-rf, matplotlib, PyQt6, pytest
-- [ ] T003 [P] Configure pytest and create conftest.py in tests/
+- [x] T001 Create project structure (src/core, src/gui, src/models, tests/unit)
+- [x] T002 Create requirements.txt with scikit-rf, matplotlib, PyQt6, pytest
+- [x] T003 [P] Configure pytest and create conftest.py in tests/
 
 ---
 
@@ -33,11 +33,11 @@ description: "Tasks for 001-s-parameter-viewer"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Create ViewportConfig model in src/models/view_config.py
-- [ ] T005 Create SParameterDataset model in src/models/dataset.py
-- [ ] T006 Implement core.loader.load_touchstone_file using scikit-rf in src/core/loader.py
-- [ ] T007 [P] Create unit tests for dataset model in tests/unit/test_models.py
-- [ ] T008 [P] Create unit tests for loader logic in tests/unit/test_loader.py
+- [x] T004 Create ViewportConfig model in src/models/view_config.py
+- [x] T005 Create SParameterDataset model in src/models/dataset.py
+- [x] T006 Implement core.loader.load_touchstone_file using scikit-rf in src/core/loader.py
+- [x] T007 [P] Create unit tests for dataset model in tests/unit/test_models.py
+- [x] T008 [P] Create unit tests for loader logic in tests/unit/test_loader.py
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -51,14 +51,14 @@ description: "Tasks for 001-s-parameter-viewer"
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Create PlotWidget embedding Matplotlib in src/gui/plot_widget.py
-- [ ] T010 [US1] Implement plot_magnitude_db method in src/gui/plot_widget.py
-- [ ] T011 [P] [US1] Implement plot_phase_deg method in src/gui/plot_widget.py
-- [ ] T012 [P] [US1] Implement plot_smith method in src/gui/plot_widget.py
-- [ ] T013 [US1] Create TabManager widget to handle multiple files in src/gui/tabs.py
-- [ ] T014 [US1] Implement MainWindow with Menu Bar and File Dialog in src/gui/main_window.py
-- [ ] T015 [US1] Connect File Open action to Loader and TabManager in src/gui/main_window.py
-- [ ] T016 [US1] Create entry point in src/app.py
+- [x] T009 [US1] Create PlotWidget embedding Matplotlib in src/gui/plot_widget.py
+- [x] T010 [US1] Implement plot_magnitude_db method in src/gui/plot_widget.py
+- [x] T011 [P] [US1] Implement plot_phase_deg method in src/gui/plot_widget.py
+- [x] T012 [P] [US1] Implement plot_smith method in src/gui/plot_widget.py
+- [x] T013 [US1] Create TabManager widget to handle multiple files in src/gui/tabs.py
+- [x] T014 [US1] Implement MainWindow with Menu Bar and File Dialog in src/gui/main_window.py
+- [x] T015 [US1] Connect File Open action to Loader and TabManager in src/gui/main_window.py
+- [x] T016 [US1] Create entry point in src/app.py
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -72,10 +72,10 @@ description: "Tasks for 001-s-parameter-viewer"
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Create ControlPanel widget with layout for checkboxes in src/gui/control_panel.py
-- [ ] T018 [US2] Implement logic to update ViewportConfig visibility in src/gui/control_panel.py
-- [ ] T019 [US2] Update PlotWidget to respect visible_traces config in src/gui/plot_widget.py
-- [ ] T020 [US2] Integrate ControlPanel into MainWindow layout in src/gui/main_window.py
+- [x] T017 [US2] Create ControlPanel widget with layout for checkboxes in src/gui/control_panel.py
+- [x] T018 [US2] Implement logic to update ViewportConfig visibility in src/gui/control_panel.py
+- [x] T019 [US2] Update PlotWidget to respect visible_traces config in src/gui/plot_widget.py
+- [x] T020 [US2] Integrate ControlPanel into MainWindow layout in src/gui/main_window.py
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -89,9 +89,9 @@ description: "Tasks for 001-s-parameter-viewer"
 
 ### Implementation for User Story 4
 
-- [ ] T021 [US4] Add Min/Max frequency inputs to ControlPanel in src/gui/control_panel.py
-- [ ] T022 [US4] Implement validation logic (Min < Max) in src/gui/control_panel.py
-- [ ] T023 [US4] Update PlotWidget to update axes limits on signal in src/gui/plot_widget.py
+- [x] T021 [US4] Add Min/Max frequency inputs to ControlPanel in src/gui/control_panel.py
+- [x] T022 [US4] Implement validation logic (Min < Max) in src/gui/control_panel.py
+- [x] T023 [US4] Update PlotWidget to update axes limits on signal in src/gui/plot_widget.py
 
 **Checkpoint**: All previous stories functional + Frequency adjustment
 
@@ -105,9 +105,9 @@ description: "Tasks for 001-s-parameter-viewer"
 
 ### Implementation for User Story 3
 
-- [ ] T024 [US3] Implement matplotlib pick_event handler in src/gui/plot_widget.py
-- [ ] T025 [US3] Create annotation/tooltip logic for clicked points in src/gui/plot_widget.py
-- [ ] T026 [US3] Implement data lookup from Dataset based on clicked frequency in src/models/dataset.py
+- [x] T024 [US3] Implement matplotlib pick_event handler in src/gui/plot_widget.py
+- [x] T025 [US3] Create annotation/tooltip logic for clicked points in src/gui/plot_widget.py
+- [x] T026 [US3] Implement data lookup from Dataset based on clicked frequency in src/models/dataset.py
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -117,10 +117,10 @@ description: "Tasks for 001-s-parameter-viewer"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T027 Polish GUI layout and spacing in src/gui/main_window.py
-- [ ] T028 Add error handling dialogs for invalid file loads in src/gui/main_window.py
-- [ ] T029 Update documentation and README.md
-- [ ] T030 Final manual testing of mixed-mode v2.0 files
+- [x] T027 Polish GUI layout and spacing in src/gui/main_window.py
+- [x] T028 Add error handling dialogs for invalid file loads in src/gui/main_window.py
+- [x] T029 Update documentation and README.md
+- [x] T030 Final manual testing of mixed-mode v2.0 files
 
 ---
 

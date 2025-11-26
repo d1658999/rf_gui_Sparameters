@@ -1,0 +1,6 @@
+scikit-rf
+matplotlib
+PyQt6
+pytest
+pytest-qt
+numpy
