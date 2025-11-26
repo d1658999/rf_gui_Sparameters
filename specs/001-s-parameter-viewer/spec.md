@@ -5,11 +5,20 @@
 **Status**: Draft  
 **Input**: User description: "being a RF engineer, we need to review and watch the performance and S-parameters like S11/S12/S21/S22 etc and we can easily check the checked botton to see if we open or close the S-paramenters. we also need load or import the existed .snp file like .s1p/.s2p/.s3p/.s4p etc. we also can change the frequency range for the x-axis. we also can mark the specific point to see all the information on the plot."
 
+## Clarifications
+
+### Session 2025-11-26
+- Q: Which visualization formats are required? → A: All Standard Views (Magnitude, Phase, and Smith Chart).
+- Q: How should multiple view types be organized? → A: Tabs (One view active at a time).
+- Q: How should file loading behave? → A: Multi-File (Tabs) - Each file opens in a new independent tab.
+- Q: Which tech stack should be used? → A: scikit-rf + matplotlib (Standard RF analysis + scientific plotting).
+- Q: Which file versions must be supported? → A: Touchstone v2.0 (Full support).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Import and View S-Parameters (Priority: P1)
 
-As an RF Engineer, I want to load Touchstone (.snp) files so that I can visualize the frequency response of my DUT (Device Under Test).
+As an RF Engineer, I want to load Touchstone (.snp) files (v1.0 and v2.0) so that I can visualize the frequency response of my DUT (Device Under Test).
 
 **Why this priority**: This is the fundamental capability of the application. Without loading and plotting data, no other features matter.
 
@@ -18,8 +27,10 @@ As an RF Engineer, I want to load Touchstone (.snp) files so that I can visualiz
 **Acceptance Scenarios**:
 
 1. **Given** the application is open, **When** I select an `.s2p` file from the file dialog, **Then** the application parses the file and displays a plot with frequency on the x-axis.
-2. **Given** a file is loaded, **Then** the plot defaults to showing Magnitude (dB) for all available S-parameters (e.g., S11, S21, S12, S22).
-3. **Given** an invalid or corrupted file is selected, **When** I attempt to load it, **Then** the system displays an error message and does not crash.
+2. **Given** a file is loaded, **Then** the plot defaults to showing Magnitude (dB) for all available S-parameters, but allows switching to Phase or Smith Chart views via **plot type tabs**.
+3. **Given** a file is already open, **When** I load a second file, **Then** it opens in a **new file tab**, keeping the first file open and accessible.
+4. **Given** an invalid or corrupted file is selected, **When** I attempt to load it, **Then** the system displays an error message and does not crash.
+5. **Given** a Touchstone v2.0 file with mixed-mode parameters, **When** loaded, **Then** the system correctly parses and displays the data.
 
 ---
 
@@ -79,14 +90,16 @@ As an RF Engineer, I want to manually set the start and stop frequencies of the 
 
 ### Functional Requirements
 
-- **FR-001**: System MUST load Touchstone files with extensions .s1p, .s2p, .s3p, .s4p.
+- **FR-001**: System MUST load Touchstone files with extensions .s1p, .s2p, .s3p, .s4p, supporting **both v1.0 and v2.0 standards**.
 - **FR-002**: System MUST parse Frequency and S-parameter (Real/Imaginary or Mag/Angle) data from the file.
-- **FR-003**: System MUST calculate and plot S-parameter Magnitude in decibels (dB) by default (`20 * log10(|S|)`).
+- **FR-003**: System MUST calculate and plot S-parameter Magnitude (dB), Phase (degrees), and Smith Charts.
 - **FR-004**: System MUST generate a control panel with a labeled checkbox for every S-parameter present in the file (e.g., S11, S12...).
 - **FR-005**: System MUST update the plot in real-time (or near real-time) when checkboxes are toggled.
 - **FR-006**: System MUST provide input fields to define the Minimum and Maximum frequency for the plot's x-axis.
-- **FR-007**: System MUST allow the user to select a point on the plot and display the coordinate values (Frequency, dB) textually.
+- **FR-007**: System MUST allow the user to select a point on the plot and display the coordinate values (Frequency, dB, or Phase/Impedance based on view) textually.
 - **FR-008**: System MUST automatically scale the y-axis to fit the visible traces.
+- **FR-009**: System MUST provide a **tabbed interface** to switch between Magnitude, Phase, and Smith Chart views within a file's display.
+- **FR-010**: System MUST support **multiple open files**, with each file displayed in its own independent tab or window container.
 
 ### Key Entities
 
@@ -94,10 +107,13 @@ As an RF Engineer, I want to manually set the start and stop frequencies of the 
     - `frequencies`: List[Float]
     - `matrix`: Map<String, List[Complex]> (e.g., "S11" -> data)
     - `port_count`: Integer
-- **ViewportConfig**: Represents current view state. Contains:
+    - `filename`: String
+    - `version`: String (v1.0/v2.0)
+- **ViewportConfig**: Represents current view state for a specific file tab. Contains:
     - `visible_traces`: Set<String>
     - `freq_min`: Float
     - `freq_max`: Float
+    - `active_plot_type`: Enum (Magnitude, Phase, Smith)
 
 ## Success Criteria *(mandatory)*
 
@@ -107,3 +123,4 @@ As an RF Engineer, I want to manually set the start and stop frequencies of the 
 - **SC-002**: Toggling a trace visibility checkbox updates the plot in under 100ms.
 - **SC-003**: User can read the exact dB value of a resonance peak using the marker tool with <1% error relative to the file data.
 - **SC-004**: System successfully parses 100% of valid standard Touchstone v1.0 files provided for testing.
+- **SC-005**: System successfully parses valid Touchstone v2.0 files with mixed-mode parameters.
