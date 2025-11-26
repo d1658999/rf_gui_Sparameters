@@ -20,18 +20,17 @@ class PlotWidget(QWidget):
         # Default axes
         self.ax = self.figure.add_subplot(111)
         
-        # Annotation
-        self.annot = self.ax.annotate("", xy=(0,0), xytext=(20,20),textcoords="offset points",
-                    bbox=dict(boxstyle="round", fc="w"),
-                    arrowprops=dict(arrowstyle="->"))
-        self.annot.set_visible(False)
+        # Persistent Markers: List of dicts {'freq': float, 'trace': str}
+        self.markers = []
         
         self.canvas.mpl_connect("pick_event", self.on_pick)
+        self.canvas.mpl_connect("button_press_event", self.on_click)
 
     def set_data(self, dataset: SParameterDataset, config: ViewportConfig):
         """Update the plot with new data/config."""
         self.dataset = dataset
         self.config = config
+        self.markers = [] # Reset markers on new file load? Or keep? Reset for safety.
         self.refresh_plot()
 
     def refresh_plot(self):
@@ -40,8 +39,6 @@ class PlotWidget(QWidget):
             return
 
         self.ax.clear()
-        # Hide annotation when refreshing/switching views
-        self.annot.set_visible(False)
         
         plot_type = self.config.active_plot_type
         
@@ -51,7 +48,10 @@ class PlotWidget(QWidget):
             self.plot_phase_deg()
         elif plot_type == PlotType.SMITH:
             self.plot_smith()
-            
+        
+        # Draw Markers
+        self.draw_markers()
+        
         self.figure.tight_layout()
         self.canvas.draw()
 
@@ -126,47 +126,90 @@ class PlotWidget(QWidget):
         self.ax.set_xlim(-1.1, 1.1)
         self.ax.set_ylim(-1.1, 1.1)
 
+    def draw_markers(self):
+        """Draw persistent markers."""
+        for marker in self.markers:
+            freq = marker['freq']
+            trace = marker['trace']
+            
+            if self.config.visible_traces and trace not in self.config.visible_traces:
+                continue
+                
+            # Get data point
+            data = self.dataset.find_nearest_data_point(trace, freq)
+            
+            # Determine x, y based on plot type
+            if self.config.active_plot_type == PlotType.SMITH:
+                x = np.real(data['complex'])
+                y = np.imag(data['complex'])
+                text = (f"{trace}\n"
+                        f"{data['frequency']/1e9:.3f} GHz\n"
+                        f"Z: {data['complex']:.3f}")
+            elif self.config.active_plot_type == PlotType.MAGNITUDE_DB:
+                x = data['frequency']
+                y = data['magnitude_db']
+                text = (f"{trace}\n"
+                        f"{data['frequency']/1e9:.3f} GHz\n"
+                        f"{y:.2f} dB")
+            elif self.config.active_plot_type == PlotType.PHASE_DEG:
+                x = data['frequency']
+                y = data['phase_deg']
+                text = (f"{trace}\n"
+                        f"{data['frequency']/1e9:.3f} GHz\n"
+                        f"{y:.2f}°")
+            
+            # Draw
+            self.ax.plot(x, y, 'ro') # Red dot
+            self.ax.annotate(text, xy=(x, y), xytext=(10, 10), textcoords="offset points",
+                             bbox=dict(boxstyle="round", fc="w", alpha=0.8),
+                             arrowprops=dict(arrowstyle="->"))
+
     def on_pick(self, event):
-        """Handle click on plot."""
+        """Handle click on plot to add marker."""
         if not self.dataset: 
             return
             
         line = event.artist
+        # Ensure we picked a line
+        if not hasattr(line, 'get_label'):
+            return
+            
         xdata, ydata = line.get_data()
         ind = event.ind
         
         # Take the first point clicked
         idx = ind[0]
-        x_val = xdata[idx]
-        y_val = ydata[idx]
         
-        # Identify parameter
+        # Determine frequency based on plot type
+        # For Mag/Phase, xdata is frequency.
+        # For Smith, we need to lookup frequency by index.
+        # Note: This assumes xdata matches dataset.frequencies[mask] or dataset.frequencies
+        # Smith chart plotting uses masking.
+        
         label = line.get_label()
         
-        # Get precise data from dataset (optional, or just use plot data)
-        # For smith chart, x/y are real/imag. For Mag/Phase, x is freq.
-        
         if self.config.active_plot_type == PlotType.SMITH:
-            # Show Real/Imag or Mag/Phase
-            # Use dataset to get freq? Smith chart doesn't strictly map x to freq directly without index lookup
-            # skrf's smith chart x/y are real/imag.
-            # But we know the index `idx` in the arrays.
-            freq = self.dataset.frequencies[idx]
-            data = self.dataset.find_nearest_data_point(label, freq)
-            text = (f"{label}\n"
-                    f"Freq: {data['frequency']/1e9:.3f} GHz\n"
-                    f"Mag: {data['magnitude_db']:.2f} dB\n"
-                    f"Phase: {data['phase_deg']:.2f}°\n"
-                    f"Z: {data['complex']:.3f}")
-        else:
-            # x_val is frequency
-            data = self.dataset.find_nearest_data_point(label, x_val)
-            text = (f"{label}\n"
-                    f"Freq: {data['frequency']/1e9:.3f} GHz\n"
-                    f"Mag: {data['magnitude_db']:.2f} dB\n"
-                    f"Phase: {data['phase_deg']:.2f}°")
+             # Re-calculate mask to map index back to frequency
+            mask = np.ones(len(self.dataset.frequencies), dtype=bool)
+            if self.config.freq_min > 0 and self.config.freq_max > self.config.freq_min:
+                mask = (self.dataset.frequencies >= self.config.freq_min) & \
+                       (self.dataset.frequencies <= self.config.freq_max)
             
-        self.annot.xy = (x_val, y_val)
-        self.annot.set_text(text)
-        self.annot.set_visible(True)
-        self.canvas.draw()
+            # Get filtered frequencies
+            filtered_freqs = self.dataset.frequencies[mask]
+            if idx < len(filtered_freqs):
+                freq = filtered_freqs[idx]
+            else:
+                return # Should not happen
+        else:
+            freq = xdata[idx]
+
+        # Add marker
+        self.markers.append({'freq': freq, 'trace': label})
+        self.refresh_plot()
+
+    def on_click(self, event):
+        """Handle click events (Right click to clear)."""
+        if event.button == 3: # Right Click
+            self.markers = []
+            self.refresh_plot()
