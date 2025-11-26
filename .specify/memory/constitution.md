@@ -1,50 +1,56 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+SYNC IMPACT REPORT
+==================
+Version: 1.0.0 (Initial Ratification)
+Changes:
+- Defined Project Name: rf_gui_Sparameters
+- Defined Principles:
+  1. High Quality & Testability (derived from user input)
+  2. MVP & Simplicity (YAGNI) (derived from user input)
+  3. Pythonic Standards (derived from user input)
+- Removed undefined template principles (4 & 5) to adhere to "Simplicity" and avoid overdesign.
+- Defined Governance:
+  - Ratified: 2025-11-26
+  - Version: 1.0.0
+Templates Status:
+- .specify/templates/plan-template.md: ✅ Compatible
+- .specify/templates/spec-template.md: ✅ Compatible
+- .specify/templates/tasks-template.md: ✅ Compatible
+TODOs:
+- None.
+-->
+# rf_gui_Sparameters Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. High Quality & Testability
+Code must be high quality and testable. We adhere to a Test-Driven Development (TDD) mindset where possible. Unit tests are mandatory for logic to ensure robustness and prevent regression. Coverage should be maintained at a high level.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. MVP & Simplicity (YAGNI)
+Build the Minimum Viable Product (MVP) first. Do not overdesign. Strictly follow "You Aren't Gonna Need It" (YAGNI) and "Keep It Simple, Stupid" (KISS). Avoid premature optimization and unnecessary abstraction. Implement only what is required for the current feature set.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Pythonic Standards
+Adhere strictly to Python best practices and PEP 8 style guidelines. Use idiomatic Python constructs (e.g., list comprehensions, context managers, correct type hinting). As the project is built in Python, consistency with the language's ecosystem is paramount.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+## Technology Stack
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+**Language**: Python (Latest stable recommended)
+**GUI Framework**: Python-based GUI libraries appropriate for the MVP (e.g., Tkinter, PyQt/PySide, or others as required).
+**Testing**: Standard Python testing frameworks (e.g., pytest, unittest).
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Development Workflow
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+1.  **Test-First**: Changes should ideally be accompanied by tests.
+2.  **Linting**: Code must pass standard Python linting (e.g., pylint, flake8, black).
+3.  **Versioning**: Adhere to semantic versioning for releases.
+4.  **Review**: Code reviews must ensure adherence to the Pythonic Standards and MVP principles.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution is the supreme source of truth for engineering decisions.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+- **Amendments**: Require a pull request, team review, and a version bump of this document.
+- **Compliance**: All code reviews must verify compliance with these principles. Complexity must be justified.
+- **Runtime Guidance**: See `README.md` for getting started.
+
+**Version**: 1.0.0 | **Ratified**: 2025-11-26 | **Last Amended**: 2025-11-26
